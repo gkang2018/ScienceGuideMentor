@@ -17,7 +17,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 
-app.use(express.static(path.join(__dirname, 'client/build')));
+app.use(express.static('/app/client/build'));
 
 
 // mentor signup route
@@ -88,7 +88,7 @@ app.post('/signup', (req, res) => {
 // The "catchall" handler: for any request that doesn't
 // match one above, send back React's index.html file.
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname + 'client/build/index.html'));
+  res.sendFile('/app/client/build/index.html');
 });
 
 
