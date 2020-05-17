@@ -15,8 +15,9 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 app.use(bodyParser.json())
 
-// console.log that your server is up and running
-app.listen(port, () => console.log(`Listening on port ${port}`));
+
+app.use(express.static(path.join(__dirname, '../client/build')));
+
 
 // mentor signup route
 app.post('/signup', (req, res) => {
@@ -82,3 +83,13 @@ app.post('/signup', (req, res) => {
     })
   }
 });
+
+// The "catchall" handler: for any request that doesn't
+// match one above, send back React's index.html file.
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname + '../client/build/index.html'));
+});
+
+
+// console.log that your server is up and running
+app.listen(port, () => console.log(`Listening on port ${port}`));
