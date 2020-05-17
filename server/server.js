@@ -28,8 +28,8 @@ app.post('/signup', (req, res) => {
       })
     }
 
-    let languages = [] 
-    if (req.body.secondaryLanguage === "") {
+    let languages = []
+    if (req.body.secondaryLanguage === "" || req.body.secondaryLanguage === undefined) {
       languages.push(req.body.primaryLanguage)
     }
     else {
@@ -37,30 +37,30 @@ app.post('/signup', (req, res) => {
         return res.status(400).send({
           message: "Your primary and secondary language should not match"
         })
-        
+
       }
       languages = [req.body.primaryLanguage, req.body.secondaryLanguage]
     }
 
     let areas = []
-    if (req.body.firstArea === "") {
+    if (req.body.firstArea === "" || req.body.firstArea === undefined) {
       return res.status(400).send({
         message: "You must select an initial research area"
       })
     }
-    if (req.body.secondArea !== "" && req.body.thirdArea != "") {
+    if ((req.body.secondArea !== "" && req.body.thirdArea != "") && ((req.body.secondArea !== undefined && req.body.thirdArea != undefined))) {
       if (req.body.firstArea === req.body.secondArea || req.body.secondArea === req.body.thirdArea || req.body.firstArea === req.body.thirdArea) {
-        return res.status(400).send({message: "First, Second, or Third research areas should not match"})
+        return res.status(400).send({ message: "First, Second, or Third research areas should not match" })
       }
       areas.push(req.body.firstArea, req.body.secondArea, req.body.thirdArea)
     }
     else {
-      if (req.body.secondArea === "" && req.body.thirdArea === "") {
+      if ((req.body.secondArea === "" && req.body.thirdArea === "") || (req.body.secondArea === undefined && req.body.thirdArea === undefined)) {
         areas.push(req.body.firstArea)
       }
-      else if (req.body.secondArea === "" && req.body.thirdArea !== "") {
+      else if ((req.body.secondArea === "" || req.body.secondArea === undefined) && (req.body.thirdArea !== "" && req.body.thirdArea !== undefined)) {
         areas.push(req.body.firstArea, req.body.thirdArea)
-      } 
+      }
       else {
         areas.push(req.body.firstArea, req.body.secondArea)
       }
@@ -76,7 +76,7 @@ app.post('/signup', (req, res) => {
       })
     })
   }
-  catch(error){
+  catch (error) {
     return res.status(400).send({
       message: "Could not sign up mentor at this time, please try again later"
     })

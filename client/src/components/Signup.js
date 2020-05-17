@@ -17,6 +17,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import Alert from '@material-ui/lab/Alert';
+import Snackbar from '@material-ui/core/Snackbar';
 
 
 
@@ -50,6 +51,11 @@ const useStyles = makeStyles((theme) => ({
   },
   errors: {
     color: "red"
+  },
+  snackbar: {
+    top: 0,
+    bottom: 'auto',
+    left: (window.innerWidth) / 2,
   }
 }));
 
@@ -59,7 +65,10 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Signup() {
 
-  const [successShow, setSuccessSnackbar] = useState(false)
+  const [snackbarShow, setSnackbarShow] = useState(false)
+  const [snackbarMessage, setSnackbarMessage] = useState("")
+  const [snackbarAlert, setSnackbarAlert] = useState("")
+
 
   const classes = useStyles();
   const schema = Yup.object().shape({
@@ -92,10 +101,14 @@ export default function Signup() {
     <Formik
       validationSchema={schema}
       onSubmit={(values, actions) => axios.post("/signup", { name: values.name, job: values.job, level: values.level, primaryLanguage: values.primaryLanguage, secondaryLanguage: values.secondaryLanguage, firstArea: values.firstArea, secondArea: values.secondArea, thirdArea: values.thirdArea, email: values.email, password: values.password, confirmPassword: values.confirmPassword }).then(resp => {
-        return (<Alert severity="success">{resp.data.message}</Alert>)
+        console.log(resp.data.message)
+        setSnackbarShow(true)
+        setSnackbarMessage(resp.data.message)
+        setSnackbarAlert("success")
       }).catch(error => {
-        console.log(error)
-        return (<Alert severity="success">{error.message}</Alert>)
+        setSnackbarShow(true)
+        setSnackbarMessage(error.response.data.message)
+        setSnackbarAlert("error")
       })}
       initialValues={{
         name: '',
@@ -120,6 +133,13 @@ export default function Signup() {
               <Typography component="h1" variant="h5">
                 Sign Up
           </Typography>
+
+              <Snackbar open={snackbarShow} autoHideDuration={6000} className={classes.snackbar} onClose={() => setSnackbarShow(false)}>
+                <Alert severity={snackbarAlert}>
+                  {snackbarMessage}
+                </Alert>
+              </Snackbar>
+
               <form className={classes.form} noValidate>
                 <TextField
                   variant="outlined"
@@ -155,21 +175,21 @@ export default function Signup() {
                 <p className={classes.errors}>{errors.level}</p>
 
                 <InputLabel id="label">Primary Language</InputLabel>
-                <Select labelId="label" id="select" onChange={handleChange("primaryLanguage")} value={values.primaryLanguage}>
+                <Select labelId="label" id="select" onChange={handleChange("primaryLanguage")} value={values.primaryLanguage ? values.primaryLanguage : ""}>
                   <MenuItem value="English">English</MenuItem>
                   <MenuItem value="Spanish">Spanish</MenuItem>
                 </Select>
                 <p className={classes.errors}>{errors.primaryLanguage}</p>
 
                 <InputLabel id="label">Secondary Language</InputLabel>
-                <Select labelId="label" id="select" onChange={handleChange("secondaryLanguage")} value={values.secondaryLanguage}>
+                <Select labelId="label" id="select" onChange={handleChange("secondaryLanguage")} value={values.secondaryLanguage ? values.secondaryLanguage : ""}>
                   <MenuItem value="English">English</MenuItem>
                   <MenuItem value="Spanish">Spanish</MenuItem>
                 </Select>
                 <p className={classes.errors}>{errors.secondaryLanguage}</p>
 
                 <InputLabel id="label">First Research Area</InputLabel>
-                <Select labelId="label" id="select" onChange={handleChange("firstArea")} value={values.firstArea}>
+                <Select labelId="label" id="select" onChange={handleChange("firstArea")} value={values.firstArea ? values.firstArea : ""}>
                   {interestsData.map((item) => {
                     return (
                       <MenuItem value={item.interest}>{item.interest}</MenuItem>
@@ -179,7 +199,7 @@ export default function Signup() {
                 <p className={classes.errors}>{errors.firstArea}</p>
 
                 <InputLabel id="label">Second Research Area</InputLabel>
-                <Select labelId="label" id="select" onChange={handleChange("secondArea")} value={values.secondArea}>
+                <Select labelId="label" id="select" onChange={handleChange("secondArea")} value={values.secondArea ? values.secondArea : ""}>
                   {interestsData.map((item) => {
                     return (
                       <MenuItem value={item.interest}>{item.interest}</MenuItem>
@@ -189,7 +209,7 @@ export default function Signup() {
                 <p className={classes.errors}>{errors.secondArea}</p>
 
                 <InputLabel id="label">Third Research Area</InputLabel>
-                <Select labelId="label" id="select" onChange={handleChange("thirdArea")} value={values.thirdArea}>
+                <Select labelId="label" id="select" onChange={handleChange("thirdArea")} value={values.thirdArea ? values.thirdArea : ""}>
                   {interestsData.map((item) => {
                     return (
                       <MenuItem value={item.interest}>{item.interest}</MenuItem>

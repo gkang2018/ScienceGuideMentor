@@ -5,7 +5,7 @@ const dotenv = require("dotenv")
 dotenv.config()
 
 module.exports = class AuthenticationService {
-    constructor(){
+    constructor() {
         let firebaseConfig = {
             apiKey: process.env.API_KEY,
             authDomain: process.env.AUTH_DOMAIN,
@@ -18,20 +18,20 @@ module.exports = class AuthenticationService {
         }
         if (firebase.apps.length === 0) {
             firebase.initializeApp(firebaseConfig);
-          }
+        }
     }
-    
+
     signUpMentor(name, job, email, password, languages, areas, level) {
         return new Promise((resolve, reject) => {
             firebase.auth().createUserWithEmailAndPassword(email, password).then((cred) => {
                 firebase.firestore().collection("mentors").doc(cred.user.uid).set({
-                    name: name, 
-                    job: job, 
-                    email: email, 
-                    languages: languages, 
-                    researchAreas: areas, 
-                    researchLevel: level, 
-                    students: [], 
+                    name: name,
+                    job: job,
+                    email: email,
+                    languages: languages,
+                    researchAreas: areas,
+                    researchLevel: level,
+                    students: [],
                     chatRooms: []
                 }).then(() => {
                     resolve()
